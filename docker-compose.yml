@@ -1,0 +1,85 @@
+
+services:
+
+  # api:
+  #   build:
+  #     context: .
+  #   image: librarybackend
+  #   env_file: docker-compose.env
+  #   environment:
+  #     SERVICES: api
+  #     PORT: 8585
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.api-gw.rule=PathPrefix(`/`)"
+  #     - "traefik.http.services.api-gw.loadbalancer.server.port=8585"
+  #   networks:
+  #     - internal
+
+  # greeter:
+  #   build:
+  #     context: .
+  #   image: libraryBackend
+  #   env_file: docker-compose.env
+  #   environment:
+  #     SERVICES: greeter
+  #   networks:
+  #     - internal
+
+  # products:
+  #   build:
+  #     context: .
+  #   image: libraryBackend
+  #   env_file: docker-compose.env
+  #   environment:
+  #     SERVICES: products
+  #   depends_on:
+  #     - mongo
+  #   networks:
+  #     - internal
+
+  mongo:
+    image: mongo:4
+    ports:
+      - "27017:27017"
+    volumes:
+      - data:/data/db
+    networks:
+      - internal
+
+  mongoexpressMolecular:
+    image: mongo-express:latest
+    container_name: mongo_express-molecular
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    depends_on:
+      - mongo
+    networks:
+      - internal
+
+  # traefik:
+  #   image: traefik:v2.4
+  #   command:
+  #     - "--api.insecure=true" # Don't do that in production!
+  #     - "--providers.docker=true"
+  #     - "--providers.docker.exposedbydefault=false"
+  #   ports:
+  #     - 3000:80
+  #     - 3001:8080
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #   networks:
+  #     - internal
+  #     - default
+
+networks:
+  internal:
+
+volumes:
+  data:
