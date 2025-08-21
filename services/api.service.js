@@ -29,6 +29,15 @@ module.exports = {
 			{
 				path: "/api",
 
+				cors: {
+				origin: "*",
+				methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+				allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
+				exposedHeaders: [],
+				credentials: true,
+				maxAge: 3600
+				},
+
 				whitelist: [
 					"**"
 				],

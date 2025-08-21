@@ -12,11 +12,10 @@ module.exports = {
         register: {
             params: {
                 username: "string|min:3",
-                email: "email",
                 password: "string|min:6"
             },
             async handler(ctx) {
-                const { username, email, password } = ctx.params;
+                const { username, password } = ctx.params;
                 
                 // Verificar si el usuario ya existe
                 const existingUser = await this.adapter.findOne({ username });
@@ -27,7 +26,6 @@ module.exports = {
                 // Crear usuario
                 return await this.adapter.insert({
                     username,
-                    email,
                     password: password,
                     role: "user",
                     createdAt: new Date()
@@ -41,7 +39,6 @@ module.exports = {
         return this.adapter.insertMany([
             {
                 username: "admin",
-                email: "admin@example.com",
                 password: "$2a$10$rOzJq...", 
                 role: "admin",
                 createdAt: new Date()

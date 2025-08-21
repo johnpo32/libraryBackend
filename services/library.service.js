@@ -19,11 +19,16 @@ module.exports = {
                 isbn: { type: "string", optional: true },
                 coverImage: { type: "string", optional: true }, // base64
                 review: { type: "string", optional: true },
-                rating: { type: "number", min: 1, max: 5, optional: true }
+                rating: { type: "number", min: 1, max: 5, optional: true, convert: true, default: null }
             },
             async handler(ctx) {
                 const { title, author, publishYear, isbn, coverImage, review, rating } = ctx.params;
                 const userId = ctx.meta.user.id;
+
+                const existing = await this.adapter.findOne({ title, userId });
+                if (existing) {
+                    throw new Error("Libro ya cargado");
+                }
                 
                 return await this.adapter.insert({
                     userId,
@@ -63,7 +68,7 @@ module.exports = {
             params: {
                 id: "string",
                 review: { type: "string", optional: true },
-                rating: { type: "number", min: 1, max: 5, optional: true }
+                rating: { type: "number", min: 1, max: 5, optional: true, convert: true, default: null }
             },
             async handler(ctx) {
                 const { id, review, rating } = ctx.params;

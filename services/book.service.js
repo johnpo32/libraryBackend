@@ -8,7 +8,7 @@ module.exports = {
             auth: "required",
             params: {
                 query: { type: "string", min: 1 },
-                limit: { type: "number", optional: true, default: 1 }
+                limit: { type: "number", optional: true, default: 10 }
             },
             async handler(ctx) {
                 const { query, limit } = ctx.params;
@@ -46,11 +46,11 @@ module.exports = {
                                 libBook.title === formatted.title
                             );
                             
-                            if (inLibrary) {
-                                formatted.cover = `/api/books/library/front-cover/${inLibrary._id}`;
-                                formatted.inLibrary = true;
-                                formatted.libraryId = inLibrary._id;
-                            }
+                            // if (inLibrary) {
+                            //     formatted.cover = `/api/books/library/front-cover/${inLibrary._id}`;
+                            //     formatted.inLibrary = true;
+                            //     formatted.libraryId = inLibrary._id;
+                            // }
                             
                             return formatted;
                         })
