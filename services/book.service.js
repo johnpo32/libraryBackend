@@ -78,11 +78,15 @@ module.exports = {
 
     methods: {
         formatBook(book) {
+            const keyFull = book.key ? book.key : '';
+            const key = keyFull.split("/").pop();
+
             return {
                 title: book.title,
                 author: book.author_name ? book.author_name[0] : "Desconocido",
                 publishYear: book.first_publish_year,
                 isbn: book.isbn ? book.isbn[0] : null,
+                key: key,
                 cover: book.cover_i 
                     ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` 
                     : null,

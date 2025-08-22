@@ -6,7 +6,7 @@ module.exports = {
     
     settings: {
         fields: ["_id", "userId", "title", "author", "publishYear", "isbn", 
-                "coverImage", "review", "rating", "createdAt", "updatedAt"]
+                "coverImage", "key", "review", "rating", "createdAt", "updatedAt"]
     },
 
     actions: {
@@ -17,15 +17,16 @@ module.exports = {
                 author: "string",
                 publishYear: { type: "number", optional: true },
                 isbn: { type: "string", optional: true },
+                key: { type: "string", optional: true },
                 coverImage: { type: "string", optional: true }, // base64
                 review: { type: "string", optional: true },
                 rating: { type: "number", min: 1, max: 5, optional: true, convert: true, default: null }
             },
             async handler(ctx) {
-                const { title, author, publishYear, isbn, coverImage, review, rating } = ctx.params;
+                const { title, author, publishYear, key, isbn, coverImage, review, rating } = ctx.params;
                 const userId = ctx.meta.user.id;
 
-                const existing = await this.adapter.findOne({ title, userId });
+                const existing = await this.adapter.findOne({ key, userId });
                 if (existing) {
                     throw new Error("Libro ya cargado");
                 }
@@ -36,6 +37,7 @@ module.exports = {
                     author,
                     publishYear,
                     isbn,
+                    key,
                     coverImage,
                     review,
                     rating,
