@@ -111,14 +111,17 @@ module.exports = {
             auth: "required",
             params: {
                 search: { type: "string", optional: true },
-                excludeNoReview: { type: "string", optional: true, default: false }
+                excluirSinReview: { type: "string", optional: true, default: false },
+                ordenCalificacion: { type: "string", optional: true, default: false }
             },
             async handler(ctx) {
                 
-                const { search, excludeNoReview } = ctx.params;
+                const { search, excluirSinReview, ordenCalificacion } = ctx.params;
                 const userId = ctx.meta.user.id;
-                
+                const sort = {}                
                 let query = { userId };
+
+                sort.createdAt = -1
                 
                 // Filtro de búsqueda
                 if (search) {
@@ -129,13 +132,18 @@ module.exports = {
                 }
                 
                 // Excluir libros sin review
-                if (excludeNoReview == "true") {
+                if (excluirSinReview == "true") {
                     query.review = { $exists: true, $ne: "" };
                 }
-                
+
+                if (ordenCalificacion) {
+                    query.rating = { $exists: true, $gte: 1 }
+                    sort.rating = ordenCalificacion === 'desc' ? -1 : 1
+                }               
+
                 return await this.adapter.find({ 
                     query,
-                    sort: ["-createdAt"]
+                    sort
                 });
             }
         },

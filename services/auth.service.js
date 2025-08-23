@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 module.exports = {
     name: "auth",
 
-    mixins: [DbService("users")],  // usar tu colección "users"
+    mixins: [DbService("users")],
 
     settings: {
         jwtSecret: process.env.JWT_SECRET || "your-secret-key",
