@@ -119,9 +119,7 @@ module.exports = {
                 const { search, excluirSinReview, ordenCalificacion } = ctx.params;
                 const userId = ctx.meta.user.id;
                 const sort = {}                
-                let query = { userId };
-
-                sort.createdAt = -1
+                let query = { userId };               
                 
                 // Filtro de búsqueda
                 if (search) {
@@ -137,9 +135,11 @@ module.exports = {
                 }
 
                 if (ordenCalificacion) {
-                    query.rating = { $exists: true, $gte: 1 }
-                    sort.rating = ordenCalificacion === 'desc' ? -1 : 1
+                    query.rating = { $ne: null }
+                    sort.rating = ordenCalificacion == 'desc' ? -1 : 1
                 }               
+
+                sort.createdAt = -1
 
                 return await this.adapter.find({ 
                     query,
