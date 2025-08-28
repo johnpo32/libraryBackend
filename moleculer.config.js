@@ -36,7 +36,7 @@ module.exports = {
 	// Unique node identifier. Must be unique in a namespace.
 	nodeID: null,
 	// Custom metadata store. Store here what you want. Accessing: `this.broker.metadata`
-	metadata: {}, 
+	metadata: {},
 
 	// Enable/disable logging or use custom logger. More info: https://moleculer.services/docs/0.14/logging.html
 	// Available logger types: "Console", "File", "Pino", "Winston", "Bunyan", "debug", "Log4js", "Datadog"
@@ -52,7 +52,9 @@ module.exports = {
 			// Custom object printer. If not defined, it uses the `util.inspect` method.
 			objectPrinter: null,
 			// Auto-padding the module name in order to messages begin at the same column.
-			autoPadding: false
+			autoPadding: false,
+
+			level: "warn"
 		}
 	},
 	// Default log level for built-in console logger. It can be overwritten in logger options above.
@@ -197,7 +199,28 @@ module.exports = {
 	},
 
 	// Register custom middlewares
-	middlewares: [],
+	middlewares: [
+		{
+			localAction(next, action) {
+				return async function (ctx) {
+					// Clonamos solo lo que queremos mostrar
+					const safeParams = { ...ctx.params };
+
+					// Si viene de moleculer-web, eliminamos req/res
+					if (safeParams.req) delete safeParams.req;
+					if (safeParams.res) delete safeParams.res;
+
+					console.log(` Accion: ${action.name}`);
+					console.log(" Parametros:", safeParams);
+
+					const result = await next(ctx);
+
+					console.log(` Respuesta:`, result);
+					return result;
+				};
+			}
+		}
+	],
 
 	// Register custom REPL commands.
 	replCommands: null,
